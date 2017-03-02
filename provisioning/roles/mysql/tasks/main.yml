@@ -56,31 +56,31 @@
 - name: rootパスワード変更
   when: not mycnf_file.stat.exists
   shell: |
-    mysql -u root -p'{{ mysql_default_password.stdout }}' --connect-expired-password -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mysqld_5_6.root_password }}';"
+    mysql -u root -p'{{ mysql_default_password.stdout }}' --connect-expired-password -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mysqld_5_7.root_password }}';"
 
 - name: 自分のパスワードに変更
   lineinfile:
     dest=/root/.my.cnf
     regexp='password'
-    line='password="{{mysqld_5_6.root_password}}"'
+    line='password="{{mysqld_5_7.root_password}}"'
 
 - name: anonymous ユーザの削除
   mysql_user: name='' host=localhost state=absent
 
 - name: 自分が使うユーザーを作成
-  mysql_user: name="{{ mysqld_5_6.user }}" password="{{ mysqld_5_6.password }}" priv=*.*:ALL,GRANT state=present
+  mysql_user: name="{{ mysqld_5_7.user }}" password="{{ mysqld_5_7.password }}" priv=*.*:ALL,GRANT state=present
 
 - name: 外部ホストを許可したい
-  mysql_user: name="{{ mysqld_5_6.user }}" password="{{ mysqld_5_6.password }}" host="%" priv=*.*:ALL,GRANT state=present
+  mysql_user: name="{{ mysqld_5_7.user }}" password="{{ mysqld_5_7.password }}" host="%" priv=*.*:ALL,GRANT state=present
 
 - name: 外部ホストを許可したい
-  mysql_user: name="{{ mysqld_5_6.user }}" password="{{ mysqld_5_6.password }}" host="127.0.0.1" priv=*.*:ALL,GRANT state=present
+  mysql_user: name="{{ mysqld_5_7.user }}" password="{{ mysqld_5_7.password }}" host="127.0.0.1" priv=*.*:ALL,GRANT state=present
 
 - name: root ユーザのパスワード変更
   mysql_user:
-    name: "{{ mysqld_5_6.user }}"
+    name: "{{ mysqld_5_7.user }}"
     host: "{{ item }}"
-    password: "{{ mysqld_5_6.password }}"
+    password: "{{ mysqld_5_7.password }}"
   with_items:
     - 127.0.0.1
     - ::1

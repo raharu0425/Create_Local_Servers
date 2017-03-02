@@ -1,3 +1,15 @@
 ## 先にCentOS6.7のboxをaddする必要がある
 $ vagrant box add centos67_x84 https://github.com/CommanderK5/packer-centos-template/releases/download/0.6.7/vagrant-centos-6.7.box
 
+## hostsのprivate_keyを自分のパスに合わせる
+ansible_ssh_private_key_file=[自分の環境のprivatekeyパス]
+
+## provisioning/group_vars/allファイルを作成して自分のパパスワードを設定する(8文字以上)
+---
+mysqld_5_7:
+  # root パスワード
+  root_password: roooooot
+  # 個人ユーザー
+  user: raharu
+  password: raharuraharu
+
