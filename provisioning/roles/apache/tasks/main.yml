@@ -1,0 +1,32 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+- name: Apacheをインストールする
+  yum: name={{item.name}} state=present enablerepo={{item.repo}}
+  with_items:
+    - name: httpd
+      repo: epel
+    - name: mod_ssl
+      repo: epel
+
+- name: defaut.confの書き換え
+  template: src=httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf
+
+- name: SSL認証書の作成
+  template: src=server.crt.j2 dest=/etc/pki/tls/certs/server.crt
+
+- name: SSL認証鍵の作成
+  template: src=server.key.j2 dest=/etc/pki/tls/certs/server.key
+
+- name: ssl.confの書き換え
+  template: src=ssl.conf.j2 dest=/etc/httpd/conf.d/ssl.conf
+
+#- name: create symblelink
+#  file: src=/vagrant/lam/api dest=/var/www/html/lamAPI state=link
+
+#- name: create symblelink
+#  file: src=/vagrant/lam/admin dest=/var/www/html/lamAdmin state=link
+
+- name: サービスの登録
+  service: name=httpd state=started enabled=yes
+  notify: restart httpd
+

@@ -1,0 +1,12 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+- name:  レポジトリの登録
+  yum:
+    name: http://dev.mysql.com/get/mysql57-community-release-el6-7.noarch.rpm
+    state: present
+
+- name: mysqlクライアントを入れる
+  yum: name={{item.name}} state=present enablerepo={{item.repo}}
+  with_items:
+    - name: mysql-community-client
+      repo: mysql56-community

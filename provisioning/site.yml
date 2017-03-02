@@ -1,0 +1,12 @@
+---
+# 共通設定
+- hosts: all
+  become: true
+  user: vagrant
+  roles:
+    - common
+    - memcached
+    - php
+    - redis
+    - apache
+    - mysql

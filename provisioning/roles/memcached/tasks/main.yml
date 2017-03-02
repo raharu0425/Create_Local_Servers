@@ -1,0 +1,14 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+- name: memcachedをインストール
+  yum: name={{item.name}} state=present enablerepo={{item.repo}}
+  with_items:
+    - name: memcached
+      repo: remi-php56
+    - name: php-pecl-memcache
+      repo: remi-php56
+
+- name: サービスの登録
+  service: name=memcached state=started enabled=yes
+  notify: restart memcached
+

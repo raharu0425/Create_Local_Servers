@@ -1,0 +1,13 @@
+---
+# Variables listed here are applicable to all host groups
+
+httpd_port: 80
+ntpserver: 192.168.1.2
+repository: https://github.com/bennojoy/mywebapp.git
+
+mysqld_5_6:
+  # root パスワード
+  root_password: 19850425
+  # 個人ユーザー
+  user: raharu
+  password: 19850425

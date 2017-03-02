@@ -1,0 +1,15 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+- name: Redisをインストールする
+  yum: name={{item.name}} state=present enablerepo={{item.repo}}
+  with_items:
+    - name: redis
+      repo: remi,epel
+
+- name: defaut.confの書き換え
+  template: src=redis.conf.j2 dest=/etc/redis.conf
+  notify: restart redis
+
+- name: サービスの登録
+  service: name=redis state=started enabled=yes
+  notify: restart redis

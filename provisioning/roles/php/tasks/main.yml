@@ -1,0 +1,39 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+- name: phpをインストールする
+  yum: name={{item.name}} state=present enablerepo={{item.repo}}
+  with_items:
+    - name: libmcrypt
+      repo: epel
+    - name: libmcrypt-devel
+      repo: epel
+    - name: php
+      repo: remi,remi-php56
+    - name: php-mcrypt
+      repo: remi,remi-php56
+    - name: php-mbstring
+      repo: remi,remi-php56
+    - name: php-pdo
+      repo: remi,remi-php56
+    - name: php-mysqlnd
+      repo: remi,remi-php56
+    - name: php-fpm
+      repo: remi,remi-php56
+    - name: php-json
+      repo: remi,remi-php56
+    - name: php-pecl-redis
+      repo: remi,remi-php56
+
+- name: php.iniの設定変更
+  template: src=php.ini.j2 dest=/etc/php.ini
+  notify: restart httpd
+
+- name: サービスの登録
+  service: name=php-fpm state=started enabled=yes
+  tags: php-fpm
+  notify: restart php-fpm
+
+#- name: PHP-FPMファイルの置き換え
+#  template: src=www.conf.j2 dest=/etc/php-fpm.d/www.conf
+#  tags: php-fpm
+#  notify: restart php-fpm

@@ -1,0 +1,89 @@
+---
+# install mysqld_5.7
+- name: レポジトリの登録
+  yum:
+    name: http://dev.mysql.com/get/mysql57-community-release-el6-7.noarch.rpm
+    state: present
+
+- name: デフォルトから外す
+  replace: dest=/etc/yum.repos.d/{{item}} regexp="enabled *= *1" replace="enabled=0"
+  with_items:
+    - mysql-community.repo
+
+- name: mysqld のインストール
+  yum:
+    name: "{{ item }}"
+    enablerepo: mysql57-community
+    state: present
+  with_items:
+    - mysql-community-server
+    - mysql-community-client
+    - mysql-community-common
+    - mysql-community-libs
+    - mysql-community-libs-compat
+    - MySQL-python
+
+- name: mysqld 起動・自動起動設定
+  service: name=mysqld state=started enabled=yes
+
+- name: 初期パスワードの取得
+  shell: cat /var/log/mysqld.log | grep 'password is generated' | awk '{print $11}'
+  register: mysql_default_password
+  tags: mysql
+
+- name: .my.cnfがあるかどうかを判定
+  stat: path=/root/.my.cnf
+  register: mycnf_file
+
+- name: 末尾に複数行追加
+  when: not mycnf_file.stat.exists
+  lineinfile:
+    dest=/root/.my.cnf
+    state=present
+    create=yes
+    mode=0600
+    line={{ item }}
+  with_items:
+    - "[client]"
+    - 'password="{{mysql_default_password.stdout}}"'
+
+- name: パスワード規約をゆるくする
+  when: not mycnf_file.stat.exists
+  shell: |
+    mysql -u root -p'{{ mysql_default_password.stdout }}' --connect-expired-password -e "SET GLOBAL validate_password_length=8;"
+    mysql -u root -p'{{ mysql_default_password.stdout }}' --connect-expired-password -e "SET GLOBAL validate_password_policy=LOW;"
+
+- name: rootパスワード変更
+  when: not mycnf_file.stat.exists
+  shell: |
+    mysql -u root -p'{{ mysql_default_password.stdout }}' --connect-expired-password -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mysqld_5_6.root_password }}';"
+
+- name: 自分のパスワードに変更
+  lineinfile:
+    dest=/root/.my.cnf
+    regexp='password'
+    line='password="{{mysqld_5_6.root_password}}"'
+
+- name: anonymous ユーザの削除
+  mysql_user: name='' host=localhost state=absent
+
+- name: 自分が使うユーザーを作成
+  mysql_user: name="{{ mysqld_5_6.user }}" password="{{ mysqld_5_6.password }}" priv=*.*:ALL,GRANT state=present
+
+- name: 外部ホストを許可したい
+  mysql_user: name="{{ mysqld_5_6.user }}" password="{{ mysqld_5_6.password }}" host="%" priv=*.*:ALL,GRANT state=present
+
+- name: 外部ホストを許可したい
+  mysql_user: name="{{ mysqld_5_6.user }}" password="{{ mysqld_5_6.password }}" host="127.0.0.1" priv=*.*:ALL,GRANT state=present
+
+- name: root ユーザのパスワード変更
+  mysql_user:
+    name: "{{ mysqld_5_6.user }}"
+    host: "{{ item }}"
+    password: "{{ mysqld_5_6.password }}"
+  with_items:
+    - 127.0.0.1
+    - ::1
+    - localhost.localdomain
+
+

@@ -1,0 +1,17 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+- name: nginxをインストールする
+  yum: name={{item.name}} state=present enablerepo={{item.repo}}
+  with_items:
+    - name: nginx-1.10.1
+      repo: nginx
+
+- name: サービスの登録
+  service: name=nginx state=started enabled=yes
+  tags: nginx
+
+- name: defaut.confの書き換え
+  template: src=defaunt.conf.j2 dest=/etc/nginx/conf.d/default.conf
+  tags: nginx
+  notify: restart nginx
+
