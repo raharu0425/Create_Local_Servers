@@ -5,8 +5,16 @@
   user: vagrant
   roles:
     - common
-    - memcached
-    - php
-    - redis
-    - apache
-    - mysql
+      #- memcached
+      #- composer
+      #- redis
+      #- apache
+      #- mysql
+
+# webサーバー設定
+- hosts: web
+  become: true
+  user: vagrant
+  roles:
+    - nginx
+    - php7

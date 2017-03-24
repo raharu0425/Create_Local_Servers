@@ -1,0 +1,88 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+- name: phpをインストールする
+  yum: name={{item.name}} state=present enablerepo={{item.repo}}
+  with_items:
+    - name: libmcrypt
+      repo: epel
+    - name: libmcrypt-devel
+      repo: epel
+    - name: php
+      repo: remi,remi-php71
+    - name: php-mcrypt
+      repo: remi,remi-php71
+    - name: php-mbstring
+      repo: remi,remi-php71
+    - name: php-pdo
+      repo: remi,remi-php71
+    - name: php-mysqlnd
+      repo: remi,remi-php71
+    - name: php-fpm
+      repo: remi,remi-php71
+    - name: php-json
+      repo: remi,remi-php71
+    - name: php-pecl-redis
+      repo: remi,remi-php71
+    - name: php-pear
+      repo: remi,remi-php71
+
+- name: php.iniの設定変更
+  template: src=php.ini.j2 dest=/etc/php.ini
+  notify: restart nginx
+
+- name: www.confを書き換える
+  lineinfile: >
+    dest='/etc/php-fpm.d/www.conf'
+    state=present
+    backrefs=yes
+    regexp='user = apache'
+    line='user = nginx'
+  notify: restart nginx
+
+- name: www.confを書き換える
+  lineinfile: >
+    dest='/etc/php-fpm.d/www.conf'
+    state=present
+    backrefs=yes
+    regexp='group = apache'
+    line='group = nginx'
+  notify: restart nginx
+
+- name: www.confを書き換える
+  lineinfile: >
+    dest='/etc/php-fpm.d/www.conf'
+    state=present
+    backrefs=yes
+    regexp='listen = 127.0.0.1:9000'
+    line='listen = /var/run/php-fpm/php-fpm.sock'
+  notify: restart nginx
+
+- name: www.confを書き換える
+  lineinfile: >
+    dest='/etc/php-fpm.d/www.conf'
+    state=present
+    backrefs=yes
+    regexp=';listen.owner = nobody'
+    line='listen.owner = nginx'
+  notify: restart nginx
+
+- name: www.confを書き換える
+  lineinfile: >
+    dest='/etc/php-fpm.d/www.conf'
+    state=present
+    backrefs=yes
+    regexp=';listen.group = nobody'
+    line='listen.group = nginx'
+  notify: restart nginx
+
+# 現状なぜかできないので行づつ書き換えてる
+
+  #- name: PHP-FPMファイルの置き換え
+  #  template: src=project.conf.j2 dest=/etc/php-fpm.d/project.conf
+  #  tags: test
+  #notify: restart php-fpm
+
+- name: サービスの登録
+  service: name=php-fpm state=started enabled=yes
+  notify: restart php-fpm
+

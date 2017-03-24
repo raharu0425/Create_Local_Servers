@@ -1,4 +1,5 @@
 # ignores
 .vagrant/
 all
+sync/*
 

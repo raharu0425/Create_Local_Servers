@@ -23,34 +23,30 @@
 
 - name: NTPのインストール
   yum: name=ntp state=present
-  tags: ntp
 
 - name: NTPファイルの置き換え
   template: src=ntp.conf.j2 dest=/etc/ntp.conf
-  tags: ntp
+  notify: restart ntp
+
+- name: NTP閏秒の設定
+  template: src=ntpd.j2 dest=/etc/sysconfig/ntpd
   notify: restart ntp
 
 - name: create symblelink
   file: src=/usr/share/zoneinfo/Asia/Tokyo dest=/etc/localtime state=link force=yes
-  tags: ntp
 
 - name: 時間を日本時間に変更
   template: src=clock.j2 dest=/etc/sysconfig/clock
-  tags: ntp
 
 - name: サービスの登録
   service: name=ntpd state=started enabled=yes
-  tags: ntp
 
 - name: iptables設定ファイルの置き換え
   template: src=iptables.conf.j2 dest=/etc/sysconfig/iptables
-  tags: iptables
   notify: restart iptables
 
 - name: NSSのアップデート
   yum: name=nss disablerepo=epel state=latest
 
-#- name: test to see if selinux is running
-#  command: /usr/sbin/getenforce
-#  register: sestatus
-#  changed_when: false
+- name: lsofのインストール
+  yum: name=lsof disablerepo=epel state=latest
