@@ -35,44 +35,19 @@
     dest='/etc/php-fpm.d/www.conf'
     state=present
     backrefs=yes
-    regexp='user = apache'
-    line='user = nginx'
-  notify: restart nginx
-
-- name: www.confを書き換える
-  lineinfile: >
-    dest='/etc/php-fpm.d/www.conf'
-    state=present
-    backrefs=yes
-    regexp='group = apache'
-    line='group = nginx'
-  notify: restart nginx
-
-- name: www.confを書き換える
-  lineinfile: >
-    dest='/etc/php-fpm.d/www.conf'
-    state=present
-    backrefs=yes
-    regexp='listen = 127.0.0.1:9000'
-    line='listen = /var/run/php-fpm/php-fpm.sock'
-  notify: restart nginx
-
-- name: www.confを書き換える
-  lineinfile: >
-    dest='/etc/php-fpm.d/www.conf'
-    state=present
-    backrefs=yes
-    regexp=';listen.owner = nobody'
-    line='listen.owner = nginx'
-  notify: restart nginx
-
-- name: www.confを書き換える
-  lineinfile: >
-    dest='/etc/php-fpm.d/www.conf'
-    state=present
-    backrefs=yes
-    regexp=';listen.group = nobody'
-    line='listen.group = nginx'
+    regexp={{ item.regexp }}
+    line={{ item.line }}
+  with_items:
+    - regexp: 'group = apache'
+      line: 'group = nginx'
+    - regexp: 'user = apache'
+      line: 'user = nginx'
+    - regexp: 'listen = 127.0.0.1:9000'
+      line: 'listen = /var/run/php-fpm/php-fpm.sock'
+    - regexp: ';listen.owner = nobody'
+      line: 'listen.owner = nginx'
+    - regexp: ';listen.group = nobody'
+      line: 'listen.group = nginx'
   notify: restart nginx
 
 # 現状なぜかできないので行づつ書き換えてる
