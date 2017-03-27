@@ -8,23 +8,23 @@
     - name: libmcrypt-devel
       repo: epel
     - name: php
-      repo: remi,remi-php71
+      repo: remi,remi-php70
     - name: php-mcrypt
-      repo: remi,remi-php71
+      repo: remi,remi-php70
     - name: php-mbstring
-      repo: remi,remi-php71
+      repo: remi,remi-php70
     - name: php-pdo
-      repo: remi,remi-php71
+      repo: remi,remi-php70
     - name: php-mysqlnd
-      repo: remi,remi-php71
+      repo: remi,remi-php70
     - name: php-fpm
-      repo: remi,remi-php71
+      repo: remi,remi-php70
     - name: php-json
-      repo: remi,remi-php71
+      repo: remi,remi-php70
     - name: php-pecl-redis
-      repo: remi,remi-php71
+      repo: remi,remi-php70
     - name: php-pear
-      repo: remi,remi-php71
+      repo: remi,remi-php70
 
 - name: php.iniの設定変更
   template: src=php.ini.j2 dest=/etc/php.ini

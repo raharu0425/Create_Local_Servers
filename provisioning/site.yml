@@ -18,3 +18,5 @@
   roles:
     - nginx
     - php7
+    - composer
+    - phalcon3

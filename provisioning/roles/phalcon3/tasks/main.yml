@@ -1,0 +1,23 @@
+---
+- name: Zphaer&Phalconのインストール
+  yum: name={{item.name}} state=present enablerepo={{item.repo}}
+  with_items:
+    - name: zephir
+      repo: remi,remi-php70
+    - name: php-phalcon3
+      repo: remi,remi-php70
+
+- name: phalcon_devtoolを入れる
+  git:
+    repo: git://github.com/phalcon/phalcon-devtools.git
+    dest: /tmp/phalcon3_devtools/
+    version: 3.0.x
+
+- name: phalcon_devtoolインストール
+  shell: /tmp/phalcon3_devtools/phalcon.sh
+
+- name: インストール先にシンボリックリンクを張り替える
+  file:
+    src: /tmp/phalcon3_devtools/phalcon.php
+    dest: /usr/bin/phalcon
+    state: link
