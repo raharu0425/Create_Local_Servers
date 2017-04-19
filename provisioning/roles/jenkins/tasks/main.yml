@@ -1,0 +1,22 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+- name: wget, Java 7をインストール
+  yum: name={{item.name}} state=present enablerepo={{item.repo}}
+  with_items:
+    - name: wget
+      repo: epel
+    - name: java-1.7.0-openjdk
+      repo: epel
+
+- name: Jenkins落としてくる
+  get_url: url=http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo dest=/etc/yum.repos.d/jenkins.repo
+
+- name: Jekinsリポジトリのついk
+  rpm_key: key=http://pkg.jenkins-ci.org/redhat-stable/jenkins-ci.org.key
+
+- name: アップデート
+  yum: name=jenkins state=latest
+
+- name: サービスの登録
+  service: name=jenkins state=started enabled=yes
+

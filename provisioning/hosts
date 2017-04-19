@@ -5,6 +5,12 @@
 [redis]
 192.168.185.104 ansible_ssh_user=vagrant ansible_ssh_private_key_file=/Users/raharu/work/project_template/.vagrant/machines/redis/virtualbox/private_key
 
+[memcache]
+192.168.185.104 ansible_ssh_user=vagrant ansible_ssh_private_key_file=/Users/raharu/work/project_template/.vagrant/machines/redis/virtualbox/private_key
+
 [db]
 192.168.185.105 ansible_ssh_user=vagrant ansible_ssh_private_key_file=/Users/raharu/work/project_template/.vagrant/machines/dbm/virtualbox/private_key
 192.168.185.106 ansible_ssh_user=vagrant ansible_ssh_private_key_file=/Users/raharu/work/project_template/.vagrant/machines/dbs/virtualbox/private_key
+
+[server_manager]
+192.168.185.107 ansible_ssh_user=vagrant ansible_ssh_private_key_file=/Users/raharu/work/project_template/.vagrant/machines/sm/virtualbox/private_key

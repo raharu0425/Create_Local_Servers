@@ -9,4 +9,4 @@
   yum: name={{item.name}} state=present enablerepo={{item.repo}}
   with_items:
     - name: mysql-community-client
-      repo: mysql56-community
+      repo: mysql57-community

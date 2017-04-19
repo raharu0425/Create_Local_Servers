@@ -25,6 +25,8 @@
       repo: remi,remi-php70
     - name: php-pear
       repo: remi,remi-php70
+    - name: php-pecl-memcache
+      repo: remi,remi-php70
 
 - name: php.iniの設定変更
   template: src=php.ini.j2 dest=/etc/php.ini

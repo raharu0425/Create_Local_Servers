@@ -5,11 +5,6 @@
   user: vagrant
   roles:
     - common
-      #- memcached
-      #- composer
-      #- redis
-      #- apache
-      #- mysql
 
 # webサーバー設定
 - hosts: web
@@ -20,3 +15,35 @@
     - php7
     - composer
     - phalcon3
+
+# dbサーバー設定
+- hosts: db
+  become: true
+  user: vagrant
+  roles:
+    - mysql
+
+# redisサーバー設定
+- hosts: redis
+  become: true
+  user: vagrant
+  roles:
+    - redis
+
+# memcachedサーバー設定
+- hosts: memcache
+  become: true
+  user: vagrant
+  roles:
+    - memcached
+
+# 管理サーバー設定
+- hosts: server_manager
+  become: true
+  user: vagrant
+  roles:
+    - mysql-cli
+    - redis
+    - jenkins
+
+

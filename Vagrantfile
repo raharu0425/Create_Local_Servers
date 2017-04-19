@@ -20,7 +20,7 @@ Vagrant.configure(2) do |config|
     web.vm.network "private_network", ip: "192.168.185.101"
     web.vm.network "forwarded_port", guest: 22, host: 2001
     # 実行権限を変更する
-    web.vm.synced_folder "./files", "/vagrant/files", mount_options: ['dmode=777','fmode=777']
+    web.vm.synced_folder "./sync/dbapi", "/vagrant/sync/dbapi", mount_options: ['dmode=777','fmode=777']
     # GUIの有効化やメモリ数
     web.vm.provider "virtualbox" do |vb|
       vb.gui = false
@@ -85,6 +85,21 @@ Vagrant.configure(2) do |config|
     dbs.vm.provider "virtualbox" do |vb|
       vb.gui = false
       vb.memory = "128"
+    end
+  end
+
+  # server_maanger（管理サーバー）
+  config.vm.define "sm" do |sm|
+    sm.vm.box = "centos67_x84"
+    # 仮装マシンの設定
+    sm.vm.network "private_network", ip: "192.168.185.107"
+    sm.vm.network "forwarded_port", guest: 22, host: 2007
+    # 実行権限を変更する
+    #redis.vm.synced_folder ".", "/vagrant", mount_options: ['dmode=777','fmode=777']
+    # GUIの有効化やメモリ数
+    sm.vm.provider "virtualbox" do |vb|
+      vb.gui = false
+      vb.memory = "512"
     end
   end
 
