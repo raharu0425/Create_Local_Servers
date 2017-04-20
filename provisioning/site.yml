@@ -45,5 +45,6 @@
     - mysql-cli
     - redis
     - jenkins
+    - ansible
 
 

@@ -1,0 +1,9 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+- name: Ansibleをインストール
+  yum: name={{item.name}} state=present enablerepo={{item.repo}}
+  with_items:
+    - name: ansible
+      repo: epel
+
+
